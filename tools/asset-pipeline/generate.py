@@ -68,6 +68,11 @@ def _prompt(style: str, fragment: str) -> str:
 def build_jobs(model: dict, classes: List[str]) -> List[Job]:
     style = _read(PROMPTS / "style_prefix.txt")
     negative = _read(PROMPTS / "negative.txt")
+    # Terrain tiles need a *flat, straight-down* framing -- the shared 30-degree
+    # "Octopath" prefix makes ground read as a vertical wall, so terrain gets its
+    # own style + a negative that explicitly rejects walls/bricks/buildings.
+    terrain_style = _read(PROMPTS / "terrain_style.txt")
+    terrain_negative = negative + ", " + _read(PROMPTS / "terrain_negative.txt")
     biome_palette = {b["id"]: b.get("palette", "neutral") for b in model["biomes"]}
     jobs: List[Job] = []
 
@@ -84,7 +89,7 @@ def build_jobs(model: dict, classes: List[str]) -> List[Job]:
             jobs.append(Job(
                 id=f"terrain/{terrain}__flat__001", cls="terrain",
                 workflow="terrain_tile_seamless.json",
-                positive=_prompt(style, _read(pf)), negative=negative,
+                positive=_prompt(terrain_style, _read(pf)), negative=terrain_negative,
                 seed=SEEDS["terrain"], size=[1024, 1024],
                 out_path=f"assets/terrain/{terrain}__flat__001.png",
                 subject=terrain, biome=b["id"], palette=b.get("palette", "neutral"),
@@ -226,12 +231,18 @@ def main(argv=None) -> int:
     import postprocess
 
     client = ComfyClient(args.server)
+    failures = 0
     for j in jobs:
         print(f"\n>>> {j.id}")
-        run_job(j, client, postprocess)
+        try:
+            run_job(j, client, postprocess)
+        except Exception as e:
+            j.status = f"error: {e}"
+            failures += 1
         print(f"    {j.status}")
     write_manifest(jobs)
-    return 0
+    print(f"\nDone: {len(jobs) - failures} ok, {failures} failed.")
+    return 1 if failures else 0
 
 
 if __name__ == "__main__":

@@ -8,8 +8,8 @@
     "class_type": "LoraLoader",
     "inputs": {
       "lora_name": "pixel-art-xl.safetensors",
-      "strength_model": 0.9,
-      "strength_clip": 0.9,
+      "strength_model": 0.7,
+      "strength_clip": 0.7,
       "model": ["4", 0],
       "clip": ["4", 1]
     },
