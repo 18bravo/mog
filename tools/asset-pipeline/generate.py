@@ -186,8 +186,12 @@ def run_job(job: Job, client, postprocess) -> None:
     try:
         postprocess.process(A)
         job.status = "generated"
-    except SystemExit as e:  # missing optional dep (e.g. rembg) — keep the raw
-        print(f"  ! postprocess skipped for {job.id}: {e}")
+    except BaseException as e:  # SystemExit (missing dep) or any postprocess error
+        # Never lose the work: fall back to the raw render as the final tile,
+        # but surface the real reason so we can fix the postprocess step.
+        import traceback
+        print(f"  ! postprocess failed for {job.id}; keeping raw. Reason: {e!r}")
+        traceback.print_exc()
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_bytes(src.read_bytes())
         job.status = "generated:raw"
