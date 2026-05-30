@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "comfyui": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/joenorton/comfyui-mcp-server",
+        "comfyui-mcp-server"
+      ],
+      "env": {
+        "COMFYUI_HOST": "127.0.0.1",
+        "COMFYUI_PORT": "8188"
+      }
+    }
+  }
+}

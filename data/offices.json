@@ -1,0 +1,188 @@
+{
+  "$schema": "./schema/offices.schema.json",
+  "world": {
+    "name": "The Offices of the Department of War",
+    "motto": "Strength by Unity, Purpose by Duty, Service Above Self",
+    "capital": "kings_landing",
+    "source_map": "assets/source/world_map.png"
+  },
+  "biomes": [
+    { "id": "frozen_expanse", "name": "The Frozen Expanse", "terrain": "snow", "region": "far_north", "palette": "cold" },
+    { "id": "boreal_forest", "name": "The Northern Woods", "terrain": "forest_floor", "region": "north", "palette": "cold" },
+    { "id": "westerlands_hills", "name": "The Westerlands", "terrain": "hills", "region": "west", "palette": "neutral" },
+    { "id": "the_reach", "name": "The Reach", "terrain": "farmland", "region": "south_central", "palette": "warm" },
+    { "id": "dorne_desert", "name": "Dorne", "terrain": "sand", "region": "far_south", "palette": "hot" },
+    { "id": "the_vale", "name": "The Vale", "terrain": "mountain", "region": "east", "palette": "neutral" },
+    { "id": "the_crownlands", "name": "The Crownlands", "terrain": "grass", "region": "central_east", "palette": "neutral" },
+    { "id": "riverlands", "name": "The Riverlands", "terrain": "river", "region": "central", "palette": "neutral" },
+    { "id": "the_marsh", "name": "The Neck", "terrain": "marsh", "region": "north_central", "palette": "cold" },
+    { "id": "the_seas", "name": "The Surrounding Seas", "terrain": "water", "region": "coastal", "palette": "cold" }
+  ],
+  "offices": [
+    {
+      "id": "kings_landing",
+      "location": "King's Landing",
+      "office": "SecWar",
+      "role": "Office of the Secretary of War",
+      "tier": "capital",
+      "biome": "the_crownlands",
+      "structure": "great_capital_city",
+      "map_position": { "x": 0.62, "y": 0.66 },
+      "notes": "Central hub city. Largest structure; grand cathedral-keep silhouette."
+    },
+    {
+      "id": "red_keep",
+      "location": "Red Keep",
+      "office": "WHLO",
+      "role": "War HQ Liaison Office",
+      "tier": "sub_capital",
+      "biome": "the_crownlands",
+      "structure": "fortified_keep",
+      "map_position": { "x": 0.63, "y": 0.71 },
+      "notes": "Inner keep beneath King's Landing."
+    },
+    {
+      "id": "winterfell",
+      "location": "Winterfell",
+      "office": "OSW P&R",
+      "role": "Personnel & Readiness",
+      "tier": "major_office",
+      "biome": "boreal_forest",
+      "structure": "stone_castle",
+      "map_position": { "x": 0.42, "y": 0.17 },
+      "notes": "Northern grey-stone castle; snow-dusted roofs."
+    },
+    {
+      "id": "the_dreadfort",
+      "location": "The Dreadfort",
+      "office": "OSW I&S",
+      "role": "Intelligence & Security",
+      "tier": "major_office",
+      "biome": "boreal_forest",
+      "structure": "dark_fortress",
+      "map_position": { "x": 0.58, "y": 0.22 },
+      "notes": "Foreboding dark fortress; spiked battlements."
+    },
+    {
+      "id": "the_eyrie",
+      "location": "The Eyrie",
+      "office": "OSW CAPE",
+      "role": "Cost Assessment & Program Evaluation",
+      "tier": "major_office",
+      "biome": "the_vale",
+      "structure": "mountain_castle",
+      "map_position": { "x": 0.66, "y": 0.43 },
+      "notes": "White towers atop a high mountain peak."
+    },
+    {
+      "id": "raventree_hall",
+      "location": "Raventree Hall",
+      "office": "OSW CIO",
+      "role": "Chief Information Officer",
+      "tier": "major_office",
+      "biome": "riverlands",
+      "structure": "stone_castle",
+      "map_position": { "x": 0.50, "y": 0.47 },
+      "notes": "Riverlands castle beside a great dead weirwood."
+    },
+    {
+      "id": "harrenhal",
+      "location": "Harrenhal",
+      "office": "ODAM",
+      "role": "Director of Administration & Management",
+      "tier": "major_office",
+      "biome": "riverlands",
+      "structure": "ruined_megacastle",
+      "map_position": { "x": 0.44, "y": 0.56 },
+      "notes": "Enormous half-melted castle; the largest ruin."
+    },
+    {
+      "id": "casterly_rock",
+      "location": "Casterly Rock",
+      "office": "OSW COMP",
+      "role": "Comptroller",
+      "tier": "major_office",
+      "biome": "westerlands_hills",
+      "structure": "golden_cliff_castle",
+      "map_position": { "x": 0.24, "y": 0.58 },
+      "notes": "Golden castle carved into a coastal cliff."
+    },
+    {
+      "id": "the_twins",
+      "location": "The Twins",
+      "office": "Joint Staff",
+      "role": "The Joint Staff",
+      "tier": "major_office",
+      "biome": "riverlands",
+      "structure": "twin_bridge_castle",
+      "map_position": { "x": 0.40, "y": 0.42 },
+      "notes": "Two towers joined by a fortified bridge over a river."
+    },
+    {
+      "id": "highgarden",
+      "location": "Highgarden",
+      "office": "OSW A&S",
+      "role": "Acquisition & Sustainment",
+      "tier": "major_office",
+      "biome": "the_reach",
+      "structure": "garden_castle",
+      "map_position": { "x": 0.33, "y": 0.72 },
+      "notes": "Verdant castle ringed by gardens and fields."
+    },
+    {
+      "id": "oldtown",
+      "location": "Oldtown",
+      "office": "OSW R&E",
+      "role": "Research & Engineering",
+      "tier": "major_office",
+      "biome": "the_reach",
+      "structure": "tower_city",
+      "map_position": { "x": 0.27, "y": 0.85 },
+      "notes": "Ancient city crowned by a tall lighthouse-tower (the Hightower)."
+    },
+    {
+      "id": "dragonstone",
+      "location": "Dragonstone",
+      "office": "SecAF",
+      "role": "Department of the Air Force",
+      "tier": "service_secretariat",
+      "biome": "the_seas",
+      "structure": "island_fortress",
+      "map_position": { "x": 0.84, "y": 0.64 },
+      "notes": "Volcanic island fortress; dragon motifs."
+    },
+    {
+      "id": "the_arbor",
+      "location": "The Arbor",
+      "office": "SecNav",
+      "role": "Department of the Navy",
+      "tier": "service_secretariat",
+      "biome": "the_seas",
+      "structure": "island_port",
+      "map_position": { "x": 0.18, "y": 0.86 },
+      "notes": "Southern island; harbors and vineyards."
+    },
+    {
+      "id": "horn_hill",
+      "location": "Horn Hill",
+      "office": "Sec Army",
+      "role": "Department of the Army",
+      "tier": "service_secretariat",
+      "biome": "the_reach",
+      "structure": "hill_castle",
+      "map_position": { "x": 0.42, "y": 0.92 },
+      "notes": "Southern hill castle."
+    },
+    {
+      "id": "the_wall",
+      "location": "The Wall / Castle Black",
+      "office": "Frontier Command",
+      "role": "Frontier outpost",
+      "tier": "outpost",
+      "biome": "frozen_expanse",
+      "structure": "ice_wall_gate",
+      "map_position": { "x": 0.45, "y": 0.08 },
+      "notes": "Colossal wall of ice with a black fortress gate."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Pipeline scratch + raw ComfyUI output (regenerable; final assets may be committed)
+assets/_scratch/
+assets/**/_raw/
+
+# Models are large and live in ComfyUI, not here
+*.safetensors
+*.ckpt
+
+# OS
+.DS_Store

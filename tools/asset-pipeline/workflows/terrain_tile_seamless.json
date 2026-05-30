@@ -1,0 +1,64 @@
+{
+  "4": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": { "ckpt_name": "sd_xl_base_1.0.safetensors" },
+    "_meta": { "title": "CHECKPOINT" }
+  },
+  "10": {
+    "class_type": "LoraLoader",
+    "inputs": {
+      "lora_name": "pixel-art-xl.safetensors",
+      "strength_model": 0.9,
+      "strength_clip": 0.9,
+      "model": ["4", 0],
+      "clip": ["4", 1]
+    },
+    "_meta": { "title": "LORA" }
+  },
+  "11": {
+    "class_type": "SeamlessTile",
+    "inputs": { "tiling": "enable", "copy_vae": "disable", "model": ["10", 0] },
+    "_meta": { "title": "SEAMLESS" }
+  },
+  "6": {
+    "class_type": "CLIPTextEncode",
+    "inputs": { "text": "seamless tileable ground texture", "clip": ["10", 1] },
+    "_meta": { "title": "POSITIVE" }
+  },
+  "7": {
+    "class_type": "CLIPTextEncode",
+    "inputs": { "text": "blurry, text, watermark", "clip": ["10", 1] },
+    "_meta": { "title": "NEGATIVE" }
+  },
+  "5": {
+    "class_type": "EmptyLatentImage",
+    "inputs": { "width": 1024, "height": 1024, "batch_size": 1 },
+    "_meta": { "title": "LATENT" }
+  },
+  "3": {
+    "class_type": "KSampler",
+    "inputs": {
+      "seed": 42,
+      "steps": 28,
+      "cfg": 7.0,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 1.0,
+      "model": ["11", 0],
+      "positive": ["6", 0],
+      "negative": ["7", 0],
+      "latent_image": ["5", 0]
+    },
+    "_meta": { "title": "SAMPLER" }
+  },
+  "8": {
+    "class_type": "VAEDecode",
+    "inputs": { "samples": ["3", 0], "vae": ["4", 2] },
+    "_meta": { "title": "DECODE" }
+  },
+  "9": {
+    "class_type": "SaveImage",
+    "inputs": { "filename_prefix": "mog/terrain", "images": ["8", 0] },
+    "_meta": { "title": "SAVE" }
+  }
+}

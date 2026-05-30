@@ -1,0 +1,7 @@
+# Asset pipeline dependencies (install on the GPU box that runs ComfyUI).
+# The validators and `--dry-run` paths need NONE of these — stdlib only.
+
+pillow>=10.0            # slice_map.py, postprocess.py
+requests>=2.31          # comfy_client.py HTTP calls
+websocket-client>=1.6   # comfy_client.py /ws progress + completion
+rembg>=2.0              # postprocess.py --cutout (background removal); optional, heavy
