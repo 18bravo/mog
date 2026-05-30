@@ -97,7 +97,27 @@ class ComfyClient(_Mixin):
 
         payload = {"prompt": wf, "client_id": self.client_id}
         resp = requests.post(f"http://{self.server}/prompt", json=payload, timeout=30)
-        resp.raise_for_status()
+        if resp.status_code >= 400:
+            # ComfyUI returns a JSON body explaining *why* a workflow was rejected
+            # (missing node, bad ckpt_name, etc). Surface it instead of a bare 400.
+            detail = resp.text
+            try:
+                err = resp.json()
+                parts = []
+                if err.get("error"):
+                    e = err["error"]
+                    parts.append(f"{e.get('type', '')}: {e.get('message', '')} {e.get('details', '')}".strip())
+                for node_id, ne in (err.get("node_errors") or {}).items():
+                    for d in ne.get("errors", []):
+                        parts.append(
+                            f"node {node_id} ({ne.get('class_type', '?')}): "
+                            f"{d.get('message', '')} {d.get('details', '')}".strip()
+                        )
+                if parts:
+                    detail = "\n  - " + "\n  - ".join(parts)
+            except ValueError:
+                pass
+            raise RuntimeError(f"ComfyUI rejected the workflow (HTTP {resp.status_code}):{detail}")
         return resp.json()["prompt_id"]
 
     def _wait(self, prompt_id: str) -> None:
