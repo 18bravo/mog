@@ -43,6 +43,16 @@ fi
 # shellcheck disable=SC1091
 source .venv/bin/activate
 
+# sprites/props/structures need transparent backgrounds -> rembg (one-time, larger install)
+case "$CLASS" in
+  sprites|props|structures)
+    if ! python -c "import rembg" >/dev/null 2>&1; then
+      echo "    installing rembg for background cutout (one-time, downloads a model)..."
+      pip install --quiet rembg onnxruntime || echo "    (rembg install failed; sprites will keep an opaque background)"
+    fi
+    ;;
+esac
+
 echo "==> [3/5] Checking ComfyUI at $SERVER ..."
 if ! curl -sf "http://$SERVER/system_stats" >/dev/null 2>&1; then
   echo "    !! ComfyUI not reachable at http://$SERVER"

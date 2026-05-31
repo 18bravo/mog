@@ -1,22 +1,33 @@
 {
   "4": {
     "class_type": "CheckpointLoaderSimple",
-    "inputs": { "ckpt_name": "pixelArtSpriteSheet.safetensors" },
+    "inputs": { "ckpt_name": "sd_xl_base_1.0.safetensors" },
     "_meta": { "title": "CHECKPOINT" }
+  },
+  "10": {
+    "class_type": "LoraLoader",
+    "inputs": {
+      "lora_name": "pixel-art-xl.safetensors",
+      "strength_model": 0.8,
+      "strength_clip": 0.8,
+      "model": ["4", 0],
+      "clip": ["4", 1]
+    },
+    "_meta": { "title": "LORA" }
   },
   "6": {
     "class_type": "CLIPTextEncode",
-    "inputs": { "text": "PixelartFSS, a character, full body, facing front", "clip": ["4", 1] },
+    "inputs": { "text": "full body character sprite, front view", "clip": ["10", 1] },
     "_meta": { "title": "POSITIVE" }
   },
   "7": {
     "class_type": "CLIPTextEncode",
-    "inputs": { "text": "blurry, text, watermark, cropped, multiple characters", "clip": ["4", 1] },
+    "inputs": { "text": "blurry, text, watermark, cropped, multiple characters", "clip": ["10", 1] },
     "_meta": { "title": "NEGATIVE" }
   },
   "5": {
     "class_type": "EmptyLatentImage",
-    "inputs": { "width": 512, "height": 512, "batch_size": 1 },
+    "inputs": { "width": 832, "height": 1216, "batch_size": 1 },
     "_meta": { "title": "LATENT" }
   },
   "3": {
@@ -25,10 +36,10 @@
       "seed": 42,
       "steps": 30,
       "cfg": 7.0,
-      "sampler_name": "euler_ancestral",
-      "scheduler": "normal",
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
       "denoise": 1.0,
-      "model": ["4", 0],
+      "model": ["10", 0],
       "positive": ["6", 0],
       "negative": ["7", 0],
       "latent_image": ["5", 0]

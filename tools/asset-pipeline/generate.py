@@ -129,15 +129,17 @@ def build_jobs(model: dict, classes: List[str]) -> List[Job]:
 
     # ---- sprites: one front frame per character (see consistency note below) ----
     if "sprites" in classes:
+        char_style = _read(PROMPTS / "character_style.txt")
+        char_negative = negative + ", scenery, landscape, busy background, cut off, multiple people"
         for pf in sorted((PROMPTS / "characters").glob("*.txt")):
             name = pf.stem
             jobs.append(Job(
                 id=f"sprites/{name}__front__001", cls="sprites",
                 workflow="character_spritesheet.json",
-                positive=_prompt("PixelartFSS", _read(pf)), negative=negative,
-                seed=SEEDS["sprites"], size=[512, 512],
+                positive=_prompt(char_style, _read(pf)), negative=char_negative,
+                seed=SEEDS["sprites"], size=[832, 1216],
                 out_path=f"assets/sprites/{name}__front__001.png",
-                subject=name, cutout=True, trim=True, final_size=64,
+                subject=name, cutout=True, trim=True, final_size=512,
                 prompt_file=str(pf.relative_to(HERE)),
             ))
 
