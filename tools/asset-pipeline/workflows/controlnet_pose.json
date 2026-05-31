@@ -32,7 +32,7 @@
   },
   "12": {
     "class_type": "LoadImage",
-    "inputs": { "image": "front_idle.png", "upload": "image" },
+    "inputs": { "image": "front_idle.png" },
     "_meta": { "title": "POSE" }
   },
   "13": {
