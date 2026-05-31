@@ -1,0 +1,82 @@
+{
+  "4": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": { "ckpt_name": "sd_xl_base_1.0.safetensors" },
+    "_meta": { "title": "CHECKPOINT" }
+  },
+  "10": {
+    "class_type": "LoraLoader",
+    "inputs": {
+      "lora_name": "pixel-art-xl.safetensors",
+      "strength_model": 0.8,
+      "strength_clip": 0.8,
+      "model": ["4", 0],
+      "clip": ["4", 1]
+    },
+    "_meta": { "title": "LORA" }
+  },
+  "6": {
+    "class_type": "CLIPTextEncode",
+    "inputs": { "text": "full body character sprite, front view", "clip": ["10", 1] },
+    "_meta": { "title": "POSITIVE" }
+  },
+  "7": {
+    "class_type": "CLIPTextEncode",
+    "inputs": { "text": "blurry, text, watermark, multiple characters", "clip": ["10", 1] },
+    "_meta": { "title": "NEGATIVE" }
+  },
+  "11": {
+    "class_type": "ControlNetLoader",
+    "inputs": { "control_net_name": "openpose-sdxl.safetensors" },
+    "_meta": { "title": "CONTROLNET" }
+  },
+  "12": {
+    "class_type": "LoadImage",
+    "inputs": { "image": "front_idle.png", "upload": "image" },
+    "_meta": { "title": "POSE" }
+  },
+  "13": {
+    "class_type": "ControlNetApplyAdvanced",
+    "inputs": {
+      "strength": 0.85,
+      "start_percent": 0.0,
+      "end_percent": 1.0,
+      "positive": ["6", 0],
+      "negative": ["7", 0],
+      "control_net": ["11", 0],
+      "image": ["12", 0]
+    },
+    "_meta": { "title": "CONTROL" }
+  },
+  "5": {
+    "class_type": "EmptyLatentImage",
+    "inputs": { "width": 832, "height": 1216, "batch_size": 1 },
+    "_meta": { "title": "LATENT" }
+  },
+  "3": {
+    "class_type": "KSampler",
+    "inputs": {
+      "seed": 42,
+      "steps": 30,
+      "cfg": 7.0,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 1.0,
+      "model": ["10", 0],
+      "positive": ["13", 0],
+      "negative": ["13", 1],
+      "latent_image": ["5", 0]
+    },
+    "_meta": { "title": "SAMPLER" }
+  },
+  "8": {
+    "class_type": "VAEDecode",
+    "inputs": { "samples": ["3", 0], "vae": ["4", 2] },
+    "_meta": { "title": "DECODE" }
+  },
+  "9": {
+    "class_type": "SaveImage",
+    "inputs": { "filename_prefix": "mog/poseframe", "images": ["8", 0] },
+    "_meta": { "title": "SAVE" }
+  }
+}

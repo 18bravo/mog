@@ -120,6 +120,21 @@ class ComfyClient(_Mixin):
             raise RuntimeError(f"ComfyUI rejected the workflow (HTTP {resp.status_code}):{detail}")
         return resp.json()["prompt_id"]
 
+    def upload_image(self, path: str | os.PathLike, subfolder: str = "mog_poses") -> str:
+        """Upload an image to ComfyUI's input dir so a LoadImage node can use it.
+        Returns the server-side reference ('subfolder/name') for the image widget."""
+        import requests
+
+        path = Path(path)
+        with open(path, "rb") as fh:
+            files = {"image": (path.name, fh, "image/png")}
+            data = {"subfolder": subfolder, "overwrite": "true"}
+            resp = requests.post(f"http://{self.server}/upload/image", files=files, data=data, timeout=30)
+        resp.raise_for_status()
+        j = resp.json()
+        sub = j.get("subfolder", "")
+        return f"{sub}/{j['name']}" if sub else j["name"]
+
     def _wait(self, prompt_id: str) -> None:
         from websocket import create_connection
 
