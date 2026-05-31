@@ -32,11 +32,38 @@ def _pil():
 
 
 def cutout(img):
+    """Make the background transparent. Prefer rembg (subject segmentation);
+    fall back to a white-background keyer that needs no extra dependency."""
     try:
         from rembg import remove
-    except ImportError:
-        sys.exit("--cutout needs rembg: pip install rembg")
-    return remove(img)
+        return remove(img)
+    except Exception as e:  # not installed, or model/runtime failure
+        print(f"  (rembg unavailable: {e}; using white-key fallback)")
+        return white_key(img)
+
+
+def white_key(img, thresh=40):
+    """Flood-fill near-white from the four corners and make it transparent.
+    Flooding from the edges preserves white *inside* the figure (collars, etc).
+    Works only when the subject sits on a clean light background."""
+    Image = _pil()
+    from PIL import ImageDraw
+
+    rgb = img.convert("RGB")
+    w, h = rgb.size
+    sentinel = (255, 0, 255)
+    flood = rgb.copy()
+    for corner in [(0, 0), (w - 1, 0), (0, h - 1), (w - 1, h - 1)]:
+        if sum(flood.getpixel(corner)) > 600:  # only seed on a light corner
+            ImageDraw.floodfill(flood, corner, sentinel, thresh=thresh)
+
+    out = img.convert("RGBA")
+    fpx, opx = flood.load(), out.load()
+    for y in range(h):
+        for x in range(w):
+            if fpx[x, y] == sentinel:
+                opx[x, y] = (0, 0, 0, 0)
+    return out
 
 
 def trim(img):

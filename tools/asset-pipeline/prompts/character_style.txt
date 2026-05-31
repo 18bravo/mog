@@ -1,1 +1,1 @@
-full body character sprite for a top-down JRPG, pixel art, single character facing front toward the viewer, standing neutral pose, whole figure visible head to toe, centered, plain solid white background, soft even front lighting
+full body character sprite for a top-down JRPG, pixel art, ONE single character only, facing front toward the viewer, standing neutral pose, whole figure visible head to toe, centered, nothing else in frame, plain solid white background, soft even front lighting

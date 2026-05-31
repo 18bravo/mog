@@ -130,7 +130,9 @@ def build_jobs(model: dict, classes: List[str]) -> List[Job]:
     # ---- sprites: one front frame per character (see consistency note below) ----
     if "sprites" in classes:
         char_style = _read(PROMPTS / "character_style.txt")
-        char_negative = negative + ", scenery, landscape, busy background, cut off, multiple people"
+        char_negative = (negative + ", scenery, landscape, busy background, cut off, "
+                         "multiple people, extra items, icons, props, bags, banners, "
+                         "objects in margins, inventory, item grid")
         for pf in sorted((PROMPTS / "characters").glob("*.txt")):
             name = pf.stem
             jobs.append(Job(
