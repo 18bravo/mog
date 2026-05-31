@@ -49,7 +49,7 @@ class Job:
     out_path: str
     subject: str = ""
     biome: str = ""
-    palette: str = "neutral"
+    palette: Optional[str] = "neutral"  # None = skip palette-snap (keep raw colours)
     cutout: bool = False
     trim: bool = False
     final_size: Optional[int] = None
@@ -92,7 +92,7 @@ def build_jobs(model: dict, classes: List[str]) -> List[Job]:
                 positive=_prompt(terrain_style, _read(pf)), negative=terrain_negative,
                 seed=SEEDS["terrain"], size=[1024, 1024],
                 out_path=f"assets/terrain/{terrain}__flat__001.png",
-                subject=terrain, biome=b["id"], palette=b.get("palette", "neutral"),
+                subject=terrain, biome=b["id"], palette=None,
                 final_size=512, prompt_file=str(pf.relative_to(HERE)),
             ))
 
@@ -176,15 +176,18 @@ def run_job(job: Job, client, postprocess) -> None:
     src = raw[0]
 
     # post-process into the final asset
-    class A:  # lightweight args shim for postprocess.process
-        infile = str(src)
-        out = str(out)
-        cutout = job.cutout
-        trim = job.trim
-        palette = job.palette if (PROMPTS.parent / "palettes" / f"{job.palette}.json").exists() else None
-        size = job.final_size
+    from types import SimpleNamespace
+    has_palette = bool(job.palette) and (PROMPTS.parent / "palettes" / f"{job.palette}.json").exists()
+    args = SimpleNamespace(
+        infile=str(src),
+        out=str(out),
+        cutout=job.cutout,
+        trim=job.trim,
+        palette=job.palette if has_palette else None,
+        size=job.final_size,
+    )
     try:
-        postprocess.process(A)
+        postprocess.process(args)
         job.status = "generated"
     except BaseException as e:  # SystemExit (missing dep) or any postprocess error
         # Never lose the work: fall back to the raw render as the final tile,
