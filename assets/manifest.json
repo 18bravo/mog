@@ -4,8 +4,8 @@
       "id": "sprites/office_lead__front__001",
       "cls": "sprites",
       "workflow": "character_spritesheet.json",
-      "positive": "full body character sprite for a top-down JRPG, pixel art, single character facing front toward the viewer, standing neutral pose, whole figure visible head to toe, centered, plain solid white background, soft even front lighting, a dignified department office lead in formal robes of office, holding a scroll, full body, standing, JRPG npc sprite, plain background, flat front lighting",
-      "negative": "blurry, jpeg artifacts, photo, photorealistic, 3d render, low contrast, washed out, text, letters, watermark, signature, ui, frame border, multiple objects, cropped, harsh shadow, flat lighting, perspective distortion, scenery, landscape, busy background, cut off, multiple people",
+      "positive": "full body character sprite for a top-down JRPG, pixel art, ONE single character only, facing front toward the viewer, standing neutral pose, whole figure visible head to toe, centered, nothing else in frame, plain solid white background, soft even front lighting, a dignified department office lead in formal robes of office, holding a scroll, full body, standing, JRPG npc sprite, plain background, flat front lighting",
+      "negative": "blurry, jpeg artifacts, photo, photorealistic, 3d render, low contrast, washed out, text, letters, watermark, signature, ui, frame border, multiple objects, cropped, harsh shadow, flat lighting, perspective distortion, scenery, landscape, busy background, cut off, multiple people, extra items, icons, props, bags, banners, objects in margins, inventory, item grid",
       "seed": 3030,
       "size": [
         832,
@@ -19,15 +19,15 @@
       "trim": true,
       "final_size": 512,
       "prompt_file": "prompts/characters/office_lead.txt",
-      "status": "generated:raw",
+      "status": "generated",
       "seamless": false
     },
     {
       "id": "sprites/player__front__001",
       "cls": "sprites",
       "workflow": "character_spritesheet.json",
-      "positive": "full body character sprite for a top-down JRPG, pixel art, single character facing front toward the viewer, standing neutral pose, whole figure visible head to toe, centered, plain solid white background, soft even front lighting, a young government analyst adventurer, neat satchel and traveling coat, friendly determined face, full body, standing, JRPG hero sprite, plain background, flat front lighting",
-      "negative": "blurry, jpeg artifacts, photo, photorealistic, 3d render, low contrast, washed out, text, letters, watermark, signature, ui, frame border, multiple objects, cropped, harsh shadow, flat lighting, perspective distortion, scenery, landscape, busy background, cut off, multiple people",
+      "positive": "full body character sprite for a top-down JRPG, pixel art, ONE single character only, facing front toward the viewer, standing neutral pose, whole figure visible head to toe, centered, nothing else in frame, plain solid white background, soft even front lighting, a young government analyst adventurer, neat satchel and traveling coat, friendly determined face, full body, standing, JRPG hero sprite, plain background, flat front lighting",
+      "negative": "blurry, jpeg artifacts, photo, photorealistic, 3d render, low contrast, washed out, text, letters, watermark, signature, ui, frame border, multiple objects, cropped, harsh shadow, flat lighting, perspective distortion, scenery, landscape, busy background, cut off, multiple people, extra items, icons, props, bags, banners, objects in margins, inventory, item grid",
       "seed": 3030,
       "size": [
         832,
@@ -41,15 +41,15 @@
       "trim": true,
       "final_size": 512,
       "prompt_file": "prompts/characters/player.txt",
-      "status": "generated:raw",
+      "status": "generated",
       "seamless": false
     },
     {
       "id": "sprites/red_tape_enemy__front__001",
       "cls": "sprites",
       "workflow": "character_spritesheet.json",
-      "positive": "full body character sprite for a top-down JRPG, pixel art, single character facing front toward the viewer, standing neutral pose, whole figure visible head to toe, centered, plain solid white background, soft even front lighting, a comical animated bundle of red tape and paperwork monster, googly eyes, full body, JRPG enemy sprite, plain background, flat front lighting",
-      "negative": "blurry, jpeg artifacts, photo, photorealistic, 3d render, low contrast, washed out, text, letters, watermark, signature, ui, frame border, multiple objects, cropped, harsh shadow, flat lighting, perspective distortion, scenery, landscape, busy background, cut off, multiple people",
+      "positive": "full body character sprite for a top-down JRPG, pixel art, ONE single character only, facing front toward the viewer, standing neutral pose, whole figure visible head to toe, centered, nothing else in frame, plain solid white background, soft even front lighting, a comical animated bundle of red tape and paperwork monster, googly eyes, full body, JRPG enemy sprite, plain background, flat front lighting",
+      "negative": "blurry, jpeg artifacts, photo, photorealistic, 3d render, low contrast, washed out, text, letters, watermark, signature, ui, frame border, multiple objects, cropped, harsh shadow, flat lighting, perspective distortion, scenery, landscape, busy background, cut off, multiple people, extra items, icons, props, bags, banners, objects in margins, inventory, item grid",
       "seed": 3030,
       "size": [
         832,
@@ -63,7 +63,7 @@
       "trim": true,
       "final_size": 512,
       "prompt_file": "prompts/characters/red_tape_enemy.txt",
-      "status": "generated:raw",
+      "status": "generated",
       "seamless": false
     }
   ]
