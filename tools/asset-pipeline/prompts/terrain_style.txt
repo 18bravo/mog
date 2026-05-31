@@ -1,1 +1,1 @@
-top-down seamless ground texture, flat lay seen from directly straight above, 16-bit JRPG tileset terrain tile, hand-painted pixel art, even soft lighting, no shadows, no horizon
+seamless repeating ground texture for a top-down 2D RPG, flat and even, viewed from directly straight above, uniform all-over pattern with no focal point, subtle fine detail, hand-painted 16-bit tileset style, even soft lighting, no shadows, no objects, no horizon

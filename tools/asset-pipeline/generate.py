@@ -158,16 +158,20 @@ def build_jobs(model: dict, classes: List[str]) -> List[Job]:
     return jobs
 
 
-def run_job(job: Job, client, postprocess) -> None:
+def run_job(job: Job, client, postprocess, seed: int = None, variant: int = 1) -> None:
     from comfy_client import load_workflow
 
+    use_seed = job.seed if seed is None else seed
     wf = load_workflow(WORKFLOWS / job.workflow)
     client.set_text(wf, "POSITIVE", job.positive)
     client.set_text(wf, "NEGATIVE", job.negative)
-    client.set_seed(wf, job.seed)
+    client.set_seed(wf, use_seed)
     client.set_size(wf, job.size[0], job.size[1])
 
-    out = Path(REPO / job.out_path)
+    # variant N -> filename suffix __NNN (replacing the planned __001)
+    base_out = Path(REPO / job.out_path)
+    stem = base_out.stem.rsplit("__", 1)[0] if base_out.stem.endswith("001") else base_out.stem
+    out = base_out.with_name(f"{stem}__{variant:03d}{base_out.suffix}")
     raw_dir = out.parent / "_raw"
     raw = client.generate(wf, str(raw_dir), out.stem)
     if not raw:
@@ -215,6 +219,8 @@ def main(argv=None) -> int:
     p = argparse.ArgumentParser(description="Generate MoG game assets")
     p.add_argument("--only", nargs="*", choices=CLASSES, help="limit to these classes")
     p.add_argument("--server", default="127.0.0.1:8188")
+    p.add_argument("--variants", type=int, default=1, metavar="N",
+                   help="render N seed-varied versions of each asset (__001.._00N) to cherry-pick")
     p.add_argument("--dry-run", action="store_true", help="plan + write manifest, no generation")
     args = p.parse_args(argv)
 
@@ -238,17 +244,21 @@ def main(argv=None) -> int:
     import postprocess
 
     client = ComfyClient(args.server)
-    failures = 0
+    failures = total = 0
     for j in jobs:
-        print(f"\n>>> {j.id}")
-        try:
-            run_job(j, client, postprocess)
-        except Exception as e:
-            j.status = f"error: {e}"
-            failures += 1
-        print(f"    {j.status}")
+        for v in range(1, args.variants + 1):
+            total += 1
+            label = j.id if args.variants == 1 else f"{j.id} (variant {v}/{args.variants})"
+            print(f"\n>>> {label}")
+            try:
+                # vary the seed per variant so each render differs
+                run_job(j, client, postprocess, seed=j.seed + (v - 1) * 1000, variant=v)
+            except Exception as e:
+                j.status = f"error: {e}"
+                failures += 1
+            print(f"    {j.status}")
     write_manifest(jobs)
-    print(f"\nDone: {len(jobs) - failures} ok, {failures} failed.")
+    print(f"\nDone: {total - failures} ok, {failures} failed.")
     return 1 if failures else 0
 
 
