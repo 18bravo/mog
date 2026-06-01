@@ -1,0 +1,7 @@
+{
+  "frame_width": 209,
+  "frame_height": 520,
+  "frames": 4,
+  "layout": "horizontal",
+  "image": "player__walk_left.png"
+}

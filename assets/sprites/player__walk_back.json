@@ -1,0 +1,7 @@
+{
+  "frame_width": 222,
+  "frame_height": 520,
+  "frames": 4,
+  "layout": "horizontal",
+  "image": "player__walk_back.png"
+}
