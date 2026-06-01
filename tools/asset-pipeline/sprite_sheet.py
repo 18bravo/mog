@@ -34,9 +34,15 @@ REPO = HERE.parents[1]
 POSES = HERE / "poses"
 PROMPTS = HERE / "prompts"
 WF = HERE / "workflows" / "controlnet_pose.json"
-SHEET_POSE = "sheet_front_walk"          # combined skeleton from make_poses.py
-SHEET_FRAMES = 4                          # cells in that skeleton
-FRAME_SEQ = ["front_idle", "front_walk1", "front_idle", "front_walk2"]
+SHEET_FRAMES = 4                          # cells per direction skeleton
+# facing phrase injected into the prompt per direction (skeleton sets the walk,
+# the prompt sets which way the character faces)
+FACING = {
+    "front": "seen from the front, facing the camera, face visible",
+    "back":  "seen from behind, facing away from the camera, back of the head visible, no face",
+    "left":  "side profile view facing left, walking to the left",
+    "right": "side profile view facing right, walking to the right",
+}
 
 
 def _read(p: Path) -> str:
@@ -87,15 +93,18 @@ def build_sheet_mode(args, client, load_workflow, set_input, postprocess):
     """One wide generation driven by the combined skeleton, then slice."""
     from PIL import Image
 
-    pose_img = POSES / f"{SHEET_POSE}.png"
+    pose_img = POSES / f"sheet_{args.direction}_walk.png"
     if not pose_img.exists():
         sys.exit(f"missing {pose_img} -- run make_poses.py first")
     style, negative = _prompts()
     desc = _read(PROMPTS / "characters" / f"{args.character}.txt")
-    # tell the model it's a row of frames of the SAME character
-    positive = (f"{style}, {desc}, character walk cycle sprite sheet, "
+    facing = FACING[args.direction]
+    # tell the model it's a row of frames of the SAME character, facing one way
+    positive = (f"{style}, {desc}, {facing}, character walk cycle sprite sheet, "
                 f"a row of {SHEET_FRAMES} frames of the same identical character walking, "
                 "consistent outfit and colors across all frames, evenly spaced, white background")
+    if args.direction == "back":
+        negative = negative + ", face, facing camera, front view"
 
     w, h = args.width * SHEET_FRAMES, args.height
     pose_server = client.upload_image(pose_img)
@@ -108,8 +117,8 @@ def build_sheet_mode(args, client, load_workflow, set_input, postprocess):
     client.set_seed(wf, args.seed)
 
     raw_dir = REPO / "assets" / "sprites" / args.character / "_sheet"
-    print(f">>> single-pass sheet  {w}x{h}  ({SHEET_FRAMES} frames)")
-    saved = client.generate(wf, str(raw_dir), "sheet")
+    print(f">>> single-pass sheet [{args.direction}]  {w}x{h}  ({SHEET_FRAMES} frames)")
+    saved = client.generate(wf, str(raw_dir), f"sheet_{args.direction}")
     if not saved:
         sys.exit("no output from ComfyUI")
     frames = slice_sheet(Image.open(saved[0]), SHEET_FRAMES)
@@ -122,13 +131,15 @@ def build_frames_mode(args, client, load_workflow, set_input, postprocess):
     from PIL import Image
 
     style, negative = _prompts()
-    positive = f"{style}, {_read(PROMPTS / 'characters' / f'{args.character}.txt')}"
+    desc = _read(PROMPTS / "characters" / f"{args.character}.txt")
+    positive = f"{style}, {desc}, {FACING[args.direction]}"
+    seq = ["front_idle", "front_walk1", "front_idle", "front_walk2"]
     raw_dir = REPO / "assets" / "sprites" / args.character / "_frames"
     frames = []
-    for i, pose in enumerate(FRAME_SEQ):
+    for i, pose in enumerate(seq):
         if not (POSES / f"{pose}.png").exists():
             sys.exit(f"missing pose '{pose}.png' -- run make_poses.py first")
-        print(f">>> frame {i+1}/{len(FRAME_SEQ)} pose={pose}")
+        print(f">>> frame {i+1}/{len(seq)} pose={pose}")
         pose_server = client.upload_image(POSES / f"{pose}.png")
         wf = load_workflow(WF)
         set_input(wf, "POSE", "image", pose_server)
@@ -149,6 +160,9 @@ def main(argv=None) -> int:
     ap.add_argument("character", help="name of a prompts/characters/<name>.txt")
     ap.add_argument("--server", default="127.0.0.1:8188")
     ap.add_argument("--mode", choices=["sheet", "frames"], default="sheet")
+    ap.add_argument("--direction", default="front",
+                    choices=["front", "back", "left", "right", "all"],
+                    help="facing to generate ('all' = all four for a full overworld character)")
     ap.add_argument("--seed", type=int, default=3030)
     ap.add_argument("--width", type=int, default=512, help="per-frame width")
     ap.add_argument("--height", type=int, default=768, help="per-frame height")
@@ -164,13 +178,16 @@ def main(argv=None) -> int:
 
     client = ComfyClient(args.server)
     builder = build_sheet_mode if args.mode == "sheet" else build_frames_mode
-    frames = builder(args, client, load_workflow, set_input, postprocess)
-    if not frames:
-        sys.exit("no frames produced")
+    directions = ["front", "back", "left", "right"] if args.direction == "all" else [args.direction]
 
-    out = REPO / "assets" / "sprites" / f"{args.character}__walk_front.png"
-    cw, ch = pack_strip(frames, out, cell=args.cell)
-    print(f"\nwrote sheet {out.relative_to(REPO)}  ({len(frames)} frames, cell {cw}x{ch})")
+    for d in directions:
+        args.direction = d
+        frames = builder(args, client, load_workflow, set_input, postprocess)
+        if not frames:
+            print(f"  ! no frames for {d}; skipping"); continue
+        out = REPO / "assets" / "sprites" / f"{args.character}__walk_{d}.png"
+        cw, ch = pack_strip(frames, out, cell=args.cell)
+        print(f"wrote sheet {out.relative_to(REPO)}  ({len(frames)} frames, cell {cw}x{ch})")
     return 0
 
 
