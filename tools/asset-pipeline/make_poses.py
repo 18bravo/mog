@@ -97,6 +97,15 @@ def draw_pose(coords, w, h):
     return img
 
 
+def compose_sheet(names, cw, ch):
+    """Lay the named pose skeletons side by side on one black canvas."""
+    from PIL import Image
+    sheet = Image.new("RGB", (cw * len(names), ch), (0, 0, 0))
+    for i, name in enumerate(names):
+        sheet.paste(draw_pose(POSES[name], cw, ch), (i * cw, 0))
+    return sheet
+
+
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(description="Generate OpenPose skeletons")
     p.add_argument("--width", type=int, default=512)
@@ -114,6 +123,13 @@ def main(argv=None) -> int:
         img = draw_pose(coords, args.width, args.height)
         img.save(OUT / f"{name}.png")
         print(f"  wrote {OUT.name}/{name}.png")
+
+    # Combined walk-sheet skeleton: all four frames in ONE wide image so the
+    # character can be generated in a single pass (consistency comes for free).
+    sheet_seq = ["front_idle", "front_walk1", "front_idle", "front_walk2"]
+    sheet = compose_sheet(sheet_seq, args.width, args.height)
+    sheet.save(OUT / "sheet_front_walk.png")
+    print(f"  wrote {OUT.name}/sheet_front_walk.png ({sheet.size[0]}x{sheet.size[1]}, {len(sheet_seq)} cells)")
     print("Done.")
     return 0
 
