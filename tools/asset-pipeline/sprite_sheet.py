@@ -76,7 +76,8 @@ def main(argv=None) -> int:
     style = _read(PROMPTS / "character_style.txt")
     desc = _read(char_file)
     positive = f"{style}, {desc}"
-    negative = _read(PROMPTS / "negative.txt") + ", multiple characters, extra items, icons, bags"
+    negative = (_read(PROMPTS / "negative.txt") + ", multiple characters, extra items, icons, "
+                "bags, weapon, sword, staff, gun, rifle, holding object, empty hands")
 
     client = ComfyClient(args.server)
     raw_dir = REPO / "assets" / "sprites" / args.character / "_frames"

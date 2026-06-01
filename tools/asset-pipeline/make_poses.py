@@ -46,30 +46,32 @@ POINT_COLORS = [
 
 
 def _base_front():
-    """Normalized (x, y) in 0..1 for a front-facing standing figure."""
+    """Normalized (x, y) in 0..1 for a front-facing standing figure.
+    Compact, heroic RPG proportions with headroom (figure spans ~0.12..0.86)."""
     return {
-        NOSE: (0.50, 0.10), NECK: (0.50, 0.18),
-        RSHO: (0.41, 0.20), LSHO: (0.59, 0.20),
-        RELB: (0.38, 0.33), LELB: (0.62, 0.33),
-        RWRI: (0.37, 0.45), LWRI: (0.63, 0.45),
-        RHIP: (0.45, 0.52), LHIP: (0.55, 0.52),
-        RKNE: (0.45, 0.70), LKNE: (0.55, 0.70),
-        RANK: (0.45, 0.92), LANK: (0.55, 0.92),
-        REYE: (0.47, 0.085), LEYE: (0.53, 0.085),
-        REAR: (0.44, 0.10), LEAR: (0.56, 0.10),
+        NOSE: (0.50, 0.14), NECK: (0.50, 0.23),
+        RSHO: (0.39, 0.25), LSHO: (0.61, 0.25),
+        RELB: (0.35, 0.37), LELB: (0.65, 0.37),
+        RWRI: (0.34, 0.49), LWRI: (0.66, 0.49),
+        RHIP: (0.44, 0.53), LHIP: (0.56, 0.53),
+        RKNE: (0.43, 0.69), LKNE: (0.57, 0.69),
+        RANK: (0.43, 0.85), LANK: (0.57, 0.85),
+        REYE: (0.47, 0.125), LEYE: (0.53, 0.125),
+        REAR: (0.44, 0.14), LEAR: (0.56, 0.14),
     }
 
 
 def _front_walk(step):
-    """step=+1 -> right leg forward/up, left back; step=-1 -> mirror."""
+    """step=+1 -> right leg forward/up, left back; step=-1 -> mirror.
+    Exaggerated stride so the animation reads clearly."""
     p = _base_front()
     s = step
-    # legs swing: forward leg knee/ankle raised + forward, back leg extended
-    p[RKNE] = (0.46, 0.68 - 0.03 * s); p[RANK] = (0.47, 0.88 - 0.05 * s)
-    p[LKNE] = (0.54, 0.68 + 0.03 * s); p[LANK] = (0.53, 0.88 + 0.05 * s)
-    # arms counter-swing
-    p[RELB] = (0.39, 0.33 + 0.02 * s); p[RWRI] = (0.40, 0.45 + 0.03 * s)
-    p[LELB] = (0.61, 0.33 - 0.02 * s); p[LWRI] = (0.60, 0.45 - 0.03 * s)
+    # legs swing forward/back with a clear raise on the forward leg
+    p[RKNE] = (0.46, 0.66 - 0.04 * s); p[RANK] = (0.48, 0.84 - 0.07 * s)
+    p[LKNE] = (0.54, 0.66 + 0.04 * s); p[LANK] = (0.52, 0.84 + 0.07 * s)
+    # arms counter-swing, kept close to the body (avoids 'holding something' look)
+    p[RELB] = (0.37, 0.37 + 0.02 * s); p[RWRI] = (0.38, 0.49 + 0.03 * s)
+    p[LELB] = (0.63, 0.37 - 0.02 * s); p[LWRI] = (0.62, 0.49 - 0.03 * s)
     return p
 
 
